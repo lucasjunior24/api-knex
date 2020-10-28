@@ -2,7 +2,10 @@ const knex = require('../database');
 
 module.exports = {
     async index(req, res) {
+
+        // traz usuarios que não foram deletados
         const results = await knex('users')
+            .where('deleted_at', null) // trazer usuarios que o tipo deletado seja = a null
 
         return res.json(results)
     },
@@ -34,7 +37,10 @@ module.exports = {
         try {
             const { id } = req.params;
             // Atualizar dados na tabela users
-            await knex('users').where({ id }).del()
+            await knex('users')
+                .where({ id })
+                .update('deleted_at', new Date())
+            // .del()
 
             return res.send()
         } catch {
